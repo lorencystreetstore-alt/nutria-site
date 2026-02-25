@@ -116,28 +116,30 @@
         </div>
     </section>
 
-    <!-- Sessão de Blog -->
-    <section id="blog" class="py-20 container mx-auto px-4">
+    <!-- SESSÃO DO BLOG -->
+    <section id="blog" class="py-20 container mx-auto px-4 relative">
         <div class="text-center mb-16">
             <span class="text-nutriaGreen font-black text-sm uppercase tracking-widest">Conteúdo</span>
             <h2 class="text-4xl font-extrabold text-nutriaBlue mt-2">Blog Nutria</h2>
             <div class="w-24 h-1 bg-nutriaGreen mx-auto mt-6 rounded-full"></div>
             <p class="text-gray-500 mt-4 text-lg">Dicas de saúde, nutrição e aproveitamento do seu MealPrep.</p>
         </div>
-
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-10 max-w-5xl mx-auto">
-            <!-- Artigo 2 -->
-            <article class="bg-white rounded-2xl shadow-md overflow-hidden card-hover">
-                <img src="https://images.unsplash.com/photo-1543339308-43e59d6b73a6?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80" alt="[Imagem de como aquecer marmitas]" class="w-full h-48 object-cover">
-                <div class="p-6">
-                    <span class="text-nutriaGreen font-semibold text-sm">Dicas Práticas</span>
-                    <h3 class="text-xl font-bold text-nutriaBlue mt-2 mb-3">Como aquecer suas marmitas sem perder o sabor</h3>
-                    <p class="text-gray-600 mb-4 text-sm">O segredo para um frango suculento e legumes crocantes mesmo depois de descongelados. Veja o passo a passo...</p>
-                    <a href="#" class="text-nutriaBlue font-bold hover:text-nutriaGreen">Ler artigo completo &rarr;</a>
-                </div>
-            </article>
-        </div>
+        <!-- Os artigos serão injetados aqui via Javascript -->
+        <div id="grid-blog" class="grid grid-cols-1 md:grid-cols-2 gap-10 max-w-5xl mx-auto"></div>
     </section>
+
+    <!-- MODAL DO BLOG (A janela pop-up escondida responsiva) -->
+    <div id="modal-blog" class="fixed inset-0 bg-[#081E3F]/90 z-[100] hidden items-center justify-center p-4 sm:p-6 backdrop-blur-sm transition-opacity duration-300 opacity-0">
+        <!-- Caixa responsiva com scroll interno (overflow-y-auto) -->
+        <div id="modal-content" class="bg-white rounded-3xl w-full max-w-3xl max-h-[90vh] overflow-y-auto shadow-2xl transform scale-95 transition-transform duration-300 relative flex flex-col">
+            <!-- Botão Fechar -->
+            <button onclick="fecharArtigo()" class="absolute top-4 right-4 bg-white text-gray-500 hover:text-red-500 hover:bg-red-50 p-2 rounded-full shadow-md z-10 transition-all">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 16 16"><path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z"/></svg>
+            </button>
+            <!-- Conteúdo Injetado via JS -->
+            <div id="modal-body" class="w-full"></div>
+        </div>
+    </div>
 
     <!-- Sessão de Pedido (Formulário + Carrinho) -->
     <section id="pedido" class="py-20 bg-nutriaBlue text-white border-t-8 border-nutriaGreen relative overflow-hidden">
@@ -292,6 +294,47 @@
 
         // CONFIGURAÇÃO DO SEU WHATSAPP (Apenas números, inclua DDD)
         const numeroWhatsApp = "5519974239183";
+
+        // 3. ARTIGOS DO BLOG
+        const artigosBlog = [
+            {
+                id: 'art-1',
+                tag: 'Saúde & Rotina',
+                titulo: '5 Benefícios do Meal Prep para sua Produtividade',
+                resumo: 'Descubra como planejar suas refeições pode não apenas salvar sua dieta, mas também te dar horas a mais na semana...',
+                imagem: 'https://images.unsplash.com/photo-1490645935967-10de6ba17061?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80',
+                conteudo: `
+                    <p class="mb-5 text-lg text-gray-600">O Meal Prep (preparação de refeições) não é apenas uma moda do mundo fitness; é uma ferramenta poderosa de gestão de tempo para pessoas ocupadas.</p>
+                    <h4 class="text-xl font-bold text-nutriaBlue mb-3">1. Economia Real de Tempo</h4>
+                    <p class="mb-5 text-gray-600">Em vez de passar 1 hora por dia na cozinha, você abre a geladeira e sua refeição Nutria está pronta em 3 minutos.</p>
+                    <h4 class="text-xl font-bold text-nutriaBlue mb-3">2. Foco Total no seu Trabalho</h4>
+                    <p class="mb-5 text-gray-600">Sabe aquela interrupção de "o que vou almoçar hoje?". Com marmitas balanceadas, sua mente fica livre para produzir muito mais.</p>
+                    <div class="bg-nutriaLight p-6 rounded-xl border-l-4 border-nutriaGreen my-6">
+                        <p class="font-bold text-nutriaBlue italic">"A organização da nossa alimentação reflete diretamente na organização da nossa vida."</p>
+                    </div>
+                `
+            },
+            {
+                id: 'art-2',
+                tag: 'Dicas Práticas',
+                titulo: 'Como aquecer suas marmitas sem perder o sabor',
+                resumo: 'O segredo para um frango suculento e legumes crocantes mesmo depois de descongelados. Veja o passo a passo...',
+                imagem: 'https://images.unsplash.com/photo-1543339308-43e59d6b73a6?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80',
+                conteudo: `
+                    <p class="mb-5 text-lg text-gray-600">Muita gente acha que comida congelada perde o sabor, mas o segredo está puramente na técnica da hora de aquecer!</p>
+                    <ul class="list-none space-y-4 mb-6">
+                        <li class="flex gap-3 items-start">
+                            <span class="bg-nutriaGreen text-white w-6 h-6 rounded-full flex items-center justify-center font-bold flex-shrink-0 mt-1">1</span>
+                            <p class="text-gray-600"><strong>No Micro-ondas:</strong> Remova a tampa para o vapor sair. Aqueça por 6 minutos, pause, misture os alimentos levemente e aqueça por mais 1 minuto.</p>
+                        </li>
+                        <li class="flex gap-3 items-start">
+                            <span class="bg-nutriaGreen text-white w-6 h-6 rounded-full flex items-center justify-center font-bold flex-shrink-0 mt-1">2</span>
+                            <p class="text-gray-600"><strong>O Truque da Água:</strong> Antes de aquecer, borrife umas 3 gotas de água sobre o arroz. O vapor gerado vai fazer com que ele volte a ficar soltinho!</p>
+                        </li>
+                    </ul>
+                `
+            }
+        ];
 
         // =========================================================================
         // FIM DA ÁREA DE ATUALIZAÇÃO - NÃO PRECISA MEXER NO CÓDIGO ABAIXO
